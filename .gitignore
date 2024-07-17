@@ -1,0 +1,10 @@
+__pycache__
+.venv
+test.py 
+test.js
+Future.md
+arch.md
+.env_my
+venv
+.VALUES
+.env

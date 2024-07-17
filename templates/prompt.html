@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.104.2">
+    <title>AI Setting</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+  <script src="https://unpkg.com/wavesurfer.js"></script>
+
+
+  <style>
+    :root{--brand-color:#4573cf;
+  --bs-primary:var(--brand-color);
+    --bs-link-color:var(--brand-color);}
+  .btn-primary{--bs-btn-bg:var(--brand-color);--bs-btn-border-color:var(--brand-color);}
+  .nav-pills{--bs-nav-pills-link-active-bg:var(--brand-color);}
+    .fixed-top-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1030;
+      background-color: rgb(252, 252, 252);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .content {
+      padding-top: 200px; 
+      padding-bottom: 200px;/* Adjust padding-top based on the height of the fixed elements */
+    }
+    .bordered-box {
+            border: 1px solid black;
+            border-radius: 10px;
+            padding: 20px;
+            height:600px;
+            overflow-y: auto;
+        }
+        .word-counter {
+            text-align: right;
+            font-size: 14px;
+            color: red;
+        }
+        .audio-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .audio-toolbar button {
+            margin: 0 5px;
+        }
+        .progress-bar-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .progress-bar-container input[type="range"] {
+            flex-grow: 1;
+            margin: 0 10px;
+        }
+        .contact-card {
+            max-width: 400px; /* 50% of the previous 400px */
+            margin: 0px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .contact-card .card-body {
+            padding: 10px; /* Adjusted for the smaller card */
+        }
+        .contact-card .card-title {
+            margin-bottom: 5px;
+            font-size: 1rem; /* Slightly smaller font size */
+            font-weight: bold;
+        }
+        .contact-card p {
+            margin-bottom: 5px; /* Reduced margin for compactness */
+        }
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-tabs-horizontal {
+            margin-left: 20px;
+        }
+        .logo {
+            width: 100px;
+        }
+        .welcome-text {
+            margin-top: -50px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--brand-color);
+            background: linear-gradient(to right, #8241c7 0%, #2575fc 100%);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+        }
+        .welcome-subtext {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+        .word-count {
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: #6c757d;
+    margin-left: 10px;
+}
+.bordered-box {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.transcription-container {
+  height: 500px; /* Adjust height as needed */
+  overflow-y: auto; /* Enable vertical scrolling */
+  margin-top: 20px; /* Add some space above the transcription container */
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.transcription-item {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.timestamp {
+  font-weight: bold;
+  color: #1257be;
+  cursor: pointer;
+}
+
+.speaker {
+  font-style: italic;
+  color: #666;
+}
+
+.text {
+  display: block;
+  margin-top: 8px;
+}
+.audio-container {
+    display: flex;
+    align-items: center;
+    width: 400px;
+    margin-top: 40px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    margin-right: 10px;
+    gap: 3px;
+}
+
+.circle-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 37px; /* Smaller size for the button */
+    height: 37px; /* Smaller size for the button */
+    border-radius: 50%;
+    background-color: #f3f3f3; /* Similar to default audio button background */
+    color: #000; /* Default audio button text color */
+    border: 1px solid #ccc; /* Similar to default audio button border */
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    outline: none;
+    padding: 0; /* Remove default padding */
+}
+
+.circle-button .icon {
+    width: 24px; /* Explicitly set the SVG size */
+    height: 24px; /* Explicitly set the SVG size */
+}
+
+.circle-button:hover {
+    background-color: #e0e0e0; /* Slightly darker on hover */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Add slight shadow on hover */
+}
+
+.circle-button:active {
+    background-color: #d1d1d1; /* Darker on active */
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); /* Inset shadow on active */
+}
+
+.played-container {
+  background-color: #d3f9d8; /* Light green background for played segments */
+}
+.speaker-info {
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #495057;
+            background: #fff;
+            border-radius: 5px;
+            padding: 0.3rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
+        }
+        .speaker-info:hover {
+            background: #f1f3f5;
+        }
+        .speaker-info strong {
+            color: #368fee;
+        }
+
+        .form-group {
+            margin-top: 3px;
+        }
+        .container-feedback {
+            /* max-width: 800px; */
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        .selected-books {
+            margin-top: 10px;
+        }
+        .selected-books span {
+            display: inline-block;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .selected-books span .remove {
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        textarea {
+            resize: none;
+        }
+        .btn-ai {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+            width: 20%;
+            margin-top: 10px;
+        }
+        .btn-ai i {
+            margin-right: 10px;
+        }
+        .btn-ai:hover {
+            background: linear-gradient(45deg, #218838, #17a2b8);
+        }
+        .form-text {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        #feedback {
+            background-color: #e9ecef;
+        }
+        #feedback-header {
+            font-size: 24px;
+            font-weight: bold;
+            color: black;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #feedback-header .highlight {
+            background: linear-gradient(45deg, #007bff, #6610f2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #spinner {
+            display: none;
+            margin: 0 auto;
+            text-align: center;
+        }
+  </style>
+</head>
+<body>
+    <div class="fixed-top-container">
+        <div class="nav-container">
+            <img onclick="redirectToHomePage()" style="margin-left: 100px;" class="logo" src="{{ url_for('static', filename='images/Qai Logo.png') }}" src alt="">
+            <div class="text-center mt-5">
+                <h1 class="welcome-text">Voice Ai QA  <p class="welcome-subtext">Train and Manage your Voice Ai bots easily and efficiently.</p>
+                </h1>
+              </div>
+              <div style="margin-right: 200px;">
+                <button style="background-color: green;"  class="btn btn-secondary float-right mr-3" onclick="window.location.href='/'">Calls</button>
+              <button class="btn btn-primary float-right mr-3" onclick="window.location.href='/setting?contact_id={{contact.contact_id}}'">Settings</button>
+              </div>
+            </div>
+    </div>
+    <!-- <div class="fixed-top-container">
+        <div class="py-3 text-center">
+          <img class="d-block mx-auto mb-4 logo" src="https://storage.googleapis.com/msgsndr/56hPxbdYWyMjhHOQ6ph0/media/65834e325567c0063ff68980.webp" alt="" width="200">
+          <button class="btn btn-primary" onclick="window.location.href='/setting?contact_id={{contact.contact_id}}'">Settings</button>
+
+          <button class="btn btn-secondary float-right mr-3" onclick="window.location.href='/'">Home</button>
+
+        </div> 
+    </div> -->
+    <!-- create rateing functionality with good or bad. and use bootstrap create only the div-->
+    
+    
+    {%if dual  %}
+    <div class="container content" style="margin-top: -100px; max-width: 2000px;">
+
+        <div class="offcanvas offcanvas-end custom-offcanvas" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasRightLabel">Coming Soon</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <!-- Add your content here -->
+            </div>
+        </div>
+        <div class="container mt-4">
+            {% if contact: %}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <!-- <input type="text" value="{{ contact.contact_full_name }} [{{contact.property_address_full}}]" class="form-control" placeholder="Contact Name and Details"> -->
+                    <div class="card contact-card">
+                        <div class="card-body">
+                            <h4 class="card-title">Lead Details</h4>
+                            <hr>
+                            <p><strong>Contact Name: </strong> {{ contact.contact_full_name }}</p>
+                            <!-- <p><strong>Caller Name: </strong>{{ contact.caller_name }}</p> -->
+
+                            <p><strong>Address:</strong> {{ contact.property_address_full }}</p>
+                            <p><strong>Phone:</strong> ({{ contact.phone[2:5] }}) {{contact.phone[5:8]}}-{{contact.phone[8:]}}</p>
+                            <p><a href="{{ contact.highlevel_url }}" target="_blank">Open Lead in REICB <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-forward" viewBox="0 0 16 16">
+                                <path d="M9.502 5.513a.144.144 0 0 0-.202.134V6.65a.5.5 0 0 1-.5.5H2.5v2.9h6.3a.5.5 0 0 1 .5.5v1.003c0 .108.11.176.202.134l3.984-2.933.042-.028a.147.147 0 0 0 0-.252l-.042-.028zM8.3 5.647a1.144 1.144 0 0 1 1.767-.96l3.994 2.94a1.147 1.147 0 0 1 0 1.946l-3.994 2.94a1.144 1.144 0 0 1-1.767-.96v-.503H2a.5.5 0 0 1-.5-.5v-3.9a.5.5 0 0 1 .5-.5h6.3z"/>
+                              </svg></a></p>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="col-md-4">
+                    <!-- <input type="text" value="{{ contact.contact_full_name }} [{{contact.property_address_full}}]" class="form-control" placeholder="Contact Name and Details"> -->
+                    <div class="card contact-card">
+                        <div class="card-body">
+                            <h4 class="card-title">Call Detail <span class="word-count">{{ contact.transcribed_at }}</span></h4>
+                            <hr>
+                            <h5 class="card-title">Talk Time <span style="margin-left: 37px;" id="transcription-word-count" class="word-count">Caller Name: {{ contact.caller_name }}</span>                            </h5>
+                            <p class="speaker-info"><strong>Speaker {{ contact.caller_name }}</strong>: {{ contact.talk_time['1']}}</p>
+                            <p class="speaker-info"><strong>Speaker {{ contact.contact_full_name }}</strong>: {{ contact.talk_time['2']}}</p>
+                            <p class="speaker-info"><strong>Dead Air</strong>: {{ contact.silent_time}} ({{contact.percentage_of_silence}}%)</p>
+                            <!-- <button class="btn btn-primary" >Toggle right offcanvas</button> -->
+                            <a style="text-decoration: underline; color: #1257be; font-size: smaller;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">More Info</a>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+               
+                <div class="col-md-3 text-right">
+                    <div id="waveform" style="max-width: 400px; max-height: 50px;" class="spectrogram"></div>
+
+                    <div class="audio-container">
+                        <div class="button-container">
+                            <button class="circle-button btn btn-secondary" id="backwardButton">
+                                <svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="m6.46967 10.4697c-.29289.2929-.29289.7677 0 1.0606s.76777.2929 1.06066 0zm1.78033 5.5303c0 .4142.33579.75.75.75s.75-.3358.75-.75zm-5.5-4c0-.4142-.33579-.75-.75-.75s-.75.3358-.75.75zm3.24903-8 .4505.59962zm-1.99903 1.99903.54801.51204.02745-.02939.02416-.03215zm.01269-4.99568c.00185-.414213-.33244-.751495-.74665-.753343s-.75149.332437-.75334.746647zm-.75885 1.98236-.75-.00334zm3.68 3.68.00334.75zm1.98906.74114c.41421-.00185.74849-.33913.74664-.75334s-.33913-.7485-.75334-.74665zm-5.26052-1.50418-.59312.45902zm.3545.3545-.45902.59312zm12.23312 5.74283v2h1.5v-2zm-2.5 2v-2h-1.5v2zm1.25 1.25c-.6904 0-1.25-.5596-1.25-1.25h-1.5c0 1.5188 1.2312 2.75 2.75 2.75zm1.25-1.25c0 .6904-.5596 1.25-1.25 1.25v1.5c1.5188 0 2.75-1.2312 2.75-2.75zm-1.25-3.25c.6904 0 1.25.5596 1.25 1.25h1.5c0-1.5188-1.2312-2.75-2.75-2.75zm0-1.5c-1.5188 0-2.75 1.2312-2.75 2.75h1.5c0-.6904.5596-1.25 1.25-1.25zm-13.75 2.75c0 5.9371 4.81294 10.75 10.75 10.75v-1.5c-5.10863 0-9.25-4.1414-9.25-9.25zm10.75 10.75c5.9371 0 10.75-4.8129 10.75-10.75h-1.5c0 5.1086-4.1414 9.25-9.25 9.25zm10.75-10.75c0-5.93706-4.8129-10.75-10.75-10.75v1.5c5.1086 0 9.25 4.14137 9.25 9.25zm-10.75-10.75c-2.41966 0-4.65456.80032-6.45148 2.15038l.90101 1.19924c1.54606-1.16158 3.46683-1.84962 5.55047-1.84962zm-6.45148 2.15038c-.81333.61107-1.53707 1.33481-2.14814 2.14814l1.19924.90101c.5262-.70037 1.14954-1.32371 1.84991-1.84991zm-3.03582-2.403726-.00886 1.985716 1.49999.00669.00886-1.98571zm4.42448 6.419056 1.98572-.00886-.0067-1.49999-1.98571.00886zm-4.43334-4.43334c-.00345.77414-.00746 1.41813.04887 1.93398.05798.53093.18758 1.02026.51655 1.44534l1.18625-.91804c-.09017-.11652-.16839-.29389-.21166-.69014-.04492-.41134-.04363-.95503-.04002-1.76445zm4.42665 2.93335c-.80942.00361-1.3531.0049-1.76445-.04002-.39625-.04327-.57362-.12149-.69014-.21166l-.91804 1.18625c.42508.32897.91441.45857 1.44534.51655.51585.05633 1.15984.05232 1.93398.04887zm.53918 3.55395-1 1.00003 1.06066 1.0606 1-1zm.78033 2.53033v4h1.5v-4zm0-1.5858v.0858h1.5v-.0858zm0 .0858v1.5h1.5v-1.5zm-5.18074-4.13831c.08838.1142.18558.2211.29066.31976l1.02669-1.09358c-.04739-.04449-.09123-.0927-.1311-.14422zm.29066.31976c.0632.05933.12925.11569.19794.16884l.91804-1.18625c-.03099-.02399-.06078-.0494-.08929-.07616zm.09207-1.19447-.12673.13563 1.09601 1.0241.12674-.13564zm5.07834 5.04332c-.0184.0184-.0508.0375-.09038.0443-.03548.0062-.06566.0008-.08858-.0087s-.04806-.027-.0688-.0564c-.02313-.0329-.03257-.0693-.03257-.0953h1.5c0-1.19004-1.43883-1.78603-2.28033-.94453z" fill="#2d264b"/>
+                                </svg>
+                            </button>
+                            <button class="circle-button btn btn-secondary" id="forwardButton">
+                                                        <svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="m6.46967 10.4697c-.29289.2929-.29289.7677 0 1.0606s.76777.2929 1.06066 0zm1.78033 5.5303c0 .4142.33579.75.75.75s.75-.3358.75-.75zm14.5-4c0-.4142-.3358-.75-.75-.75s-.75.3358-.75.75zm-4.749-8-.4505.59962zm1.999 1.99903-.5996.4505.0211.02812.0237.02602zm1.4873-5.002376c-.0019-.41421-.3391-.748495-.7533-.746647-.4143.001849-.7485.33913-.7467.753343zm-.7411 1.989056.75-.00334zm-3.68 3.68-.0034.75zm-1.9824-.75885c-.4142-.00185-.7515.33244-.7533.74665-.0019.41421.3324.75149.7466.75334zm5.2538-.00419.5931.45902zm-.3545.3545.459.59312zm-11.7331 4.15703v5.5858h1.5v-5.5858zm8 1.5858v2h1.5v-2zm-2.5 2v-2h-1.5v2zm1.25 1.25c-.6904 0-1.25-.5596-1.25-1.25h-1.5c0 1.5188 1.2312 2.75 2.75 2.75zm1.25-1.25c0 .6904-.5596 1.25-1.25 1.25v1.5c1.5188 0 2.75-1.2312 2.75-2.75zm-1.25-3.25c.6904 0 1.25.5596 1.25 1.25h1.5c0-1.5188-1.2312-2.75-2.75-2.75zm0-1.5c-1.5188 0-2.75 1.2312-2.75 2.75h1.5c0-.6904.5596-1.25 1.25-1.25zm6.25 2.75c0 5.1086-4.1414 9.25-9.25 9.25v1.5c5.9371 0 10.75-4.8129 10.75-10.75zm-9.25 9.25c-5.10863 0-9.25-4.1414-9.25-9.25h-1.5c0 5.9371 4.81294 10.75 10.75 10.75zm-9.25-9.25c0-5.10863 4.14137-9.25 9.25-9.25v-1.5c-5.93706 0-10.75 4.81294-10.75 10.75zm9.25-9.25c2.0836 0 4.0044.68804 5.5505 1.84962l.901-1.19924c-1.7969-1.35006-4.0318-2.15038-6.4515-2.15038zm5.5505 1.84962c.7003.5262 1.3237 1.14954 1.8499 1.84991l1.1992-.90101c-.611-.81333-1.3348-1.53707-2.1481-2.14814zm2.4368-3.59627.0089 1.98571 1.5-.00669-.0089-1.985716zm-2.9178 4.91237-1.9857-.00886-.0067 1.49999 1.9857.00886zm2.9267-2.92666c.0036.80942.0049 1.35311-.04 1.76445-.0433.39625-.1215.57362-.2117.69014l1.1862.91804c.329-.42508.4586-.91441.5166-1.44534.0563-.51585.0523-1.15984.0489-1.93398zm-2.9334 4.42665c.7742.00345 1.4182.00746 1.934-.04887.5309-.05798 1.0203-.18758 1.4453-.51655l-.918-1.18625c-.1165.09017-.2939.16839-.6901.21166-.4114.04492-.9551.04363-1.7645.04002zm2.6817-1.97206c-.0402.05193-.0844.1005-.1322.14528l1.0253 1.09486c.106-.0993.2041-.20699.2931-.3221zm-.1322.14528c-.0282.02638-.0576.05144-.0882.07511l.918 1.18625c.0678-.05245.133-.10802.1955-.1665zm-.1671.91474.1249.13734 1.1096-1.00929-.1249-.13734zm-11.97553 2.966-1 1.00003 1.06066 1.0606 1-1zm2.28033.94453c0-1.19004-1.43883-1.78603-2.28033-.94453l1.06066 1.06063c-.0184.0184-.0508.0375-.09038.0443-.03548.0062-.06566.0008-.08858-.0087s-.04806-.027-.0688-.0564c-.02313-.0329-.03257-.0693-.03257-.0953z" fill="#2d264b"/></svg>
+
+                            </button>
+                        </div>
+                        <audio style="width: 550px;" id="audioPlayer" controls="controls" preload="auto">
+                            <source src="{{ contact.call_recording_link }}?t={{ unique_id }}" type="audio/mp3" />
+                        </audio>
+
+                    </div>
+                    <!-- <div>
+                        <video src="{{ contact.call_recording_link }}" controls></video>
+                    </div> -->
+                    
+                    <!-- <button style="border: 0px; background-color: transparent;">
+                        <img width="30" height="30" src="https://img.icons8.com/ios/50/forward-10.png" alt="forward-10"/>
+                    </button> -->
+                            <!-- Rating System -->
+                    <!-- {% if not contact.rating %}
+                    <div class="row mb-3 rating-system">
+                        <div class="col-14 text-center rating-system-content">
+                            <h5>Please Rate the Call</h5>
+                            <div class="btn-group" role="group" aria-label="Call Rating">
+                                <button type="button" class="btn btn-success" onclick="rateCall('Good', '{{contact.contact_id}}')">Good Call</button>
+                                <button type="button" class="btn btn-danger" onclick="rateCall('Bad', '{{contact.contact_id}}')">Bad Call </button>
+                            </div>
+                        </div>
+                        <div class="text-center" style="margin-left: 10px;">
+                            <div id="spinner-feedback" class="spinner-border" role="status" style="display: none;">
+                            <span class="sr-only"></span>
+                            </div>
+                        </div>
+                        <div id="flash-message" class="alert alert-success mt-2" style="display: none;"></div>
+
+                    </div>
+                    {% endif %} -->
+                </div>
+        
+
+            </div>
+            <div class="row mb-2">
+                <!-- <div class="col-md-4">
+                    <div class="bordered-box">
+                        <h5>Prompt Field</h5>
+                        <textarea class="form-control" id="prompt-field" rows="20" placeholder="- This is where we will put the Prompt for summarization">{{ contact.prompt }}</textarea>
+                    </div>
+                </div> -->
+                
+                {% if contact.utterances %}
+                <div class="col-md-8">
+                    <div class="bordered-box">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Call Transcription</h5>
+                            <span id="transcription-word-count" class="word-count">{{ contact.words }} words</span>
+                          </div>
+                          <hr>
+                      <div id="transcription-container" class="transcription-container" style="height: 500px; overflow-y: auto;">
+                        {% for d in contact['utterances'] %}
+                        <div id="transcription-item-{{ loop.index }}" class="transcription-item">
+                          <span id="timestamp-{{ loop.index }}" class="timestamp" onclick="playFromTimestamp('{{ d.start }}', '{{ d.end }}')">
+                            <a>{{ d["start"] }} - {{ d["end"] }}</a>
+                          </span>
+                          <span class="speaker">Speaker: {{ d["speaker"][1] }}</span>
+                          <span class="text">{{ d["text"] }}</span>
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                {% else %}
+                <div class="col-md-8">
+                    <div class="bordered-box">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Call Transcription</h5>
+                        <span id="transcription-word-count" class="word-count">0 words</span>
+                      </div>
+                      <textarea class="form-control mt-3" id="call-transcription-field" rows="20" placeholder="- This is where Calls Transcription will populate\n- Make Sure to Include the Speaker Labeling">{{contact.transcription}}</textarea>
+                    </div>
+                  </div>
+                  
+                {% endif %}
+ 
+                  
+                <div class="col-md-4">
+                    <div class="bordered-box">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Call Summary</h5>
+                          </div>
+                          <hr>
+                        {% for key, value in summary_fields.items() %}
+                        {% if CONSTANTS[key] and (CONSTANTS[key] != 'Additional Info' and CONSTANTS[key] != 'Additional Information') %}
+                        
+                            <div class="form-group">
+                                <label data-search-value="{{ value }}" for="{{key}}" class="d-flex align-items-center">
+                                    <strong><i style="color: #24468c; text-decoration: underline;"><a>{{CONSTANTS[key] }}</a></i></strong> 
+                                    <svg id="checkIcon{{key}}" style="color: green; display:none" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill ms-auto" viewBox="0 0 16 16">
+                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                      </svg>
+                                      <svg id="cancelIcon{{key}}" style="color: red; display:none" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill ms-auto" viewBox="0 0 16 16">
+                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
+                                      </svg>
+                                </label>
+                                <div id="pagination{{key}}" class="ms-auto" style="display: none;">
+                                    <i id="left{{key}}" class="bi bi-arrow-left-circle"></i>
+                                    <span id="resultnum{{key}}"></span>
+                                    <i id ="right{{key}}" class="bi bi-arrow-right-circle"></i>
+                                </div>
+                                
+                                <textarea id="{{key}}" class="form-control" rows="2" placeholder="{{key}}">{{value}}</textarea>
+                            </div>
+                        {% endif %}
+                        {% if CONSTANTS[key] and (CONSTANTS[key] == 'Additional Info' or CONSTANTS[key] == 'Additional Information') %}
+                        
+                            <div class="form-group">
+                                <label class="d-flex align-items-center">
+                                    <strong>{{CONSTANTS[key] }}</strong> 
+                                    
+                                </label>
+                                
+                                <textarea id="{{key}}" class="form-control" rows="2" placeholder="Motivation">{{value}}</textarea>
+                            </div>
+                        {% endif %}
+
+                        {% endfor %}
+                        <div class="d-flex justify-content-between align-items-center" style="margin-top: 10px;">
+                            <h6>
+                                Full Call Summary
+                            </h6>
+                            <span id="word-count" class="word-count">0 words</span>
+                          </div>
+                        <textarea class="form-control" id="ai-call-summary-result" rows="20" placeholder="- Where the Output of the Summary will be Displayed">{{contact.summary}}</textarea>
+                        
+                    </div>
+                </div>
+                <div class="container-feedback">
+                    <h1 id="feedback-header">Improve Your Call Performance With <span class="highlight">Coach</span> <img style="width: 60px;" class="logo" src="{{ url_for('static', filename='images/Qai Logo.png') }}" src alt="">
+                    </h1>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="salesBooks" class="form-label">Select your sales books</label>
+                            <select id="salesBooks" class="form-select">
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                                        <div class="selected-books" id="selectedBooks">
+                                <label for="selectedBooks" class="form-label">Selected books:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="bestPractices" class="form-label">Sales Concepts<span class="form-text">(optional)</span></label>
+                            <textarea id="bestPractices" class="form-control" rows="3" placeholder="Enter Best Practices"></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="callScripts" class="form-label">Enter your script if you have one 
+                                <span class="form-text">(optional)</span>
+                            </label>
+                            <select id="availableScripts" class="form-select">
+                                <option value="">Select a script</option>
+                            </select>
+                            <p id="uploadedScriptFileName" style="display: none;"></p>
+                            <textarea id="callScripts" class="form-control" rows="3" placeholder="Enter Call Scripts"></textarea>
+                            <input type="file" id="fileUpload" class="form-control-file mt-2" accept="application/pdf">
+                            <small class="form-text text-muted">Max size: 5MB</small>
+                            <div id="flashMessage" class="alert alert-danger mt-2" style="display: none;"></div>
+                            <div id="charCount" class="form-text mt-2">Characters remaining: <span id="charRemaining">256000</span></div> <!-- Add this line for character count -->
+                            <button id="deleteScriptBtn" class="btn btn-primary mt-2" onclick="openDeleteModal()">Manage Scripts</button>
+
+                        </div>
+                        <!-- Delete Script Modal -->
+                        <div class="modal fade" id="deleteScriptModal" tabindex="-1" aria-labelledby="deleteScriptModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteScriptModalLabel">Delete Script(s)</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="deleteScriptsList">
+                                            <!-- List of scripts with checkboxes will be populated here -->
+                                        </div>
+                                        <div id="deleteError" class="alert alert-danger mt-2" style="display: none;"></div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-danger" onclick="deleteSelectedScripts()">Delete Selected</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+
+                    <button id="startCoaching" class="btn btn-ai" onclick="startCoaching()"><i class="bi bi-robot"></i> Start Coaching</button>
+                    <!-- <div id="spinner" class="spinner-border mt-3" role="status">
+                        <span class="sr-only"></span>
+                    </div> -->
+                    <div id="spinner" class="spinner-box">
+                        <div class="pulse-container">  
+                          <div class="pulse-bubble pulse-bubble-1"></div>
+                          <div class="pulse-bubble pulse-bubble-2"></div>
+                          <div class="pulse-bubble pulse-bubble-3"></div>
+                        </div>
+                      </div>
+                    <!-- <div class="mt-4">
+                        <h4>Coaching Feedback:</h4>
+                        <textarea id="feedback" class="form-control" rows="4" readonly></textarea>
+                    </div> -->
+
+                    <div id="result">
+                    </div>
+                </div>
+            
+                
+            </div>
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+                contact data is missing or not available.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.worker.min.js"></script>
+    <script src="{{ url_for('static', filename='prompt.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+            function redirectToHomePage() {
+                window.location.href = "/";
+            }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const salesBooks = [
+                "Spin Selling",
+                "You can't teach a kid to ride a bike at a seminar",
+                "Never Split the Difference",
+                "Pitch Anything"
+            ];
+
+            const salesBooksSelect = document.getElementById('salesBooks');
+            salesBooks.forEach(book => {
+                const option = document.createElement('option');
+                option.value = book;
+                option.textContent = book;
+                salesBooksSelect.appendChild(option);
+            });
+
+            salesBooksSelect.addEventListener('change', function() {
+                const selectedBooks = document.getElementById('selectedBooks');
+                const selectedValue = this.value;
+                if (!Array.from(selectedBooks.children).some(span => span.textContent.includes(selectedValue))) {
+                    const span = document.createElement('span');
+                    span.innerHTML = selectedValue + ' <span class="remove">&times;</span>';
+                    span.querySelector('.remove').onclick = function() {
+                        selectedBooks.removeChild(span);
+                    };
+                    selectedBooks.appendChild(span);
+                }
+            });
+        });
+
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+        const labels = document.querySelectorAll('label[data-search-value]');
+        // find all a elements in the labels
+        labels.forEach(label => {
+            label.addEventListener('click', function() {
+                const searchValue = this.getAttribute('data-search-value');
+                // find id of element svg with in the labeln there are two svg elements
+                // help me do it
+                const elementId = this.querySelectorAll('svg')
+                
+
+                const id = [elementId[0].getAttribute('id'), elementId[1].getAttribute('id')];
+                search(searchValue, id);
+
+            });
+        });
+    });
+
+        function search(value, id) {
+            let checkIcon = document.getElementById(id[0]);
+            const key = checkIcon.id.replace('checkIcon', '');
+            const transcript = JSON.parse('{{ contact.utterances | tojson | safe }}');
+            let result = searchTranscripts(value, transcript)
+            console.log(result)
+            
+            if (result.length > 0) {
+                let audioPlayer = document.getElementById('audioPlayer');
+                checkIcon.style.display = 'block'
+
+                let startSeconds = convertToSeconds(result[0].start);
+                audioPlayer.currentTime = startSeconds;
+                audioPlayer.play();
+            } else if (result.length == 0) {
+                const strings = value.split(" ");
+                let audioPlayer = document.getElementById('audioPlayer');
+                const result = searchTranscriptsByList(strings, transcript)
+                console.log(strings)
+                if (result.length > 0) {
+                    console.log(result)
+                    let startSeconds = convertToSeconds(result[0].start);
+                    checkIcon.style.display = 'block'
+                    audioPlayer.currentTime = startSeconds;
+                    audioPlayer.play();
+
+                }
+                else {
+                    console.log("No Match Found")
+                    document.getElementById(id[1]).style.display = 'block'
+                }
+            }
+            
+                
+        }
+        
+    </script>
+
+    <script>
+        const backwardButton = document.getElementById('backwardButton');
+        const forwardButton = document.getElementById('forwardButton');
+        const callRecording = document.getElementById('audioPlayer');
+        backwardButton.addEventListener('click', () => {
+                callRecording.currentTime -= 10;
+            });
+
+            forwardButton.addEventListener('click', () => {
+                callRecording.currentTime += 10;
+            });
+    </script>
+
+    <script>
+        document.addEventListener('keydown', function(event) {
+            const audioPlayer = document.getElementById('audioPlayer');
+
+                if (event.key === 'ArrowRight') {
+                    audioPlayer.currentTime += 10;
+                }
+                if (event.key === 'ArrowLeft') {
+                    audioPlayer.currentTime -= 10;
+                }
+                if (event.key === ' ') {
+                    if (audioPlayer.paused) {
+                        audioPlayer.play();
+                    } else {
+                        audioPlayer.pause();
+                    }
+                }
+            });
+    </script>
+    <script>
+        function updateWordCount() {
+    let textarea = document.getElementById('ai-call-summary-result');
+    let wordCount = document.getElementById('word-count');
+
+    let text = textarea.value.trim();
+    let words = text.split(/\s+/).filter(function(word) {
+        return word.length > 0;
+    });
+
+    wordCount.textContent = words.length + ' words';
+}
+
+// Initialize word count on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateWordCount();
+});
+
+    </script>
+    <script>
+        
+        function playFromTimestamp(startTime, endTime) {
+            let audioPlayer = document.getElementById('audioPlayer');
+            
+            let startSeconds = convertToSeconds(startTime);
+            let endSeconds = convertToSeconds(endTime);
+    
+            audioPlayer.currentTime = startSeconds;
+            audioPlayer.play();
+            
+    
+            // Remove previous event listeners
+            // audioPlayer.removeEventListener('timeupdate', checkTime);
+    
+            // // Define the time checking function
+            // function checkTime() {
+            //     if (audioPlayer.currentTime >= endSeconds) {
+            //         audioPlayer.pause();
+            //         audioPlayer.removeEventListener('timeupdate', checkTime);
+            //     }
+            // }
+    
+            // // Add the new event listener
+            // audioPlayer.addEventListener('timeupdate', checkTime);
+        }
+    
+        function convertToSeconds(timeString) {
+            var parts = timeString.split(':');
+            var hours = parseInt(parts[0], 10);
+            var minutes = parseInt(parts[1], 10);
+            var seconds = parseInt(parts[2], 10);
+            return hours * 3600 + minutes * 60 + seconds;
+        }
+    
+        let audioPlayer = document.getElementById('audioPlayer');
+    
+        // Function to update played segments styling
+        function updatePlayedSegments() {
+            let timestampsContainer = document.getElementById('transcription-container');
+            let timestamps = timestampsContainer.querySelectorAll('.timestamp');
+            let currentPlayingItem = null;
+    
+            timestamps.forEach(function (timestamp, index) {
+                let transcriptionItem = document.getElementById('transcription-item-' + (index + 1));
+                let startTime = timestamp.textContent.split(' - ')[0];
+                let endTime = timestamp.textContent.split(' - ')[1];
+                let startSeconds = convertToSeconds(startTime);
+                let endSeconds = convertToSeconds(endTime);
+    
+                if (audioPlayer.currentTime >= startSeconds && audioPlayer.currentTime <= endSeconds) {
+                    transcriptionItem.classList.add('played-container');
+                    currentPlayingItem = transcriptionItem;
+                } else {
+                    transcriptionItem.classList.remove('played-container');
+                }
+            });
+    
+            if (currentPlayingItem) {
+                let prevItem = currentPlayingItem.previousElementSibling;
+                let prevItemHeight = prevItem ? prevItem.clientHeight : 0;
+                timestampsContainer.scrollTop = currentPlayingItem.offsetTop - timestampsContainer.offsetTop - prevItemHeight;
+            }
+        }
+    
+        // Update played segments styling during playback
+        audioPlayer.addEventListener('timeupdate', updatePlayedSegments);
+    
+        // Initial call to update played segments styling when the page loads
+        document.addEventListener('DOMContentLoaded', updatePlayedSegments);
+    </script>
+    <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                let audioPlayer = document.getElementById('audioPlayer');
+
+                let wavesurfer = WaveSurfer.create({
+                    container: '#waveform',
+                    waveColor: '#24468c',
+                    progressColor: '#008000',
+                    mediaControls: false,
+                    backend: 'MediaElement',
+                    media: audioPlayer,
+                    height: 70,
+                    width: 380,
+                    
+                    // Set a bar width
+          // barWidth: 3,
+          // // Optionally, specify the spacing between bars
+          // barGap: 1,
+          // // And the bar radius
+          // barRadius: 2,
+                });
+                //add cors header for wavesurfer
+
+                // select the source element of the audio playerr
+                let source = audioPlayer.querySelector('source');
+                let audioSource = source.getAttribute('src') + '?t={{ unique_id }}';
+
+                // let audioSource = audioPlayer.getAttribute('src');
+        
+                audioPlayer.addEventListener('play', function () {
+                    console.log('play')
+                    wavesurfer.play();
+                });
+        
+                audioPlayer.addEventListener('pause', function () {
+                    wavesurfer.pause();
+                });
+        
+                // audioPlayer.addEventListener('seeked', function () {
+                //     wavesurfer.seekTo(audioPlayer.currentTime / audioPlayer.duration);
+                // });
+        
+                // wavesurfer.on('ready', function () {
+                //     wavesurfer.setVolume(0);
+                //     wavesurfer.setPlaybackRate(1);
+                // });
+              wavesurfer.load(audioSource);
+            });
+        </script>
+</body>
+</html>

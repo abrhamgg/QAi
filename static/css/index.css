@@ -1,0 +1,196 @@
+:root{--brand-color:#24468c;
+    --bs-primary:var(--brand-color);
+    --bs-link-color:var(--brand-color);}
+    .btn-primary{--bs-btn-bg:var(--brand-color);--bs-btn-border-color:var(--brand-color);}
+    .nav-pills{--bs-nav-pills-link-active-bg:var(--brand-color);}
+    .fixed-top-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1030;
+        background-color: rgb(255, 255, 255);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .nav-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .nav-tabs-horizontal {
+        margin-left: 20px;
+    }
+    .logo {
+        width: 100px;
+    }
+    .content {
+        padding-top: 250px; 
+        padding-bottom: 200px;
+        /* Adjust padding-top based on the height of the fixed elements */
+    }
+    .min-width-col {
+        min-width: 10px;
+        width: 100px; /* Set your desired minimum width */
+    }
+    .welcome-text {
+        margin-top: -50px;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--brand-color);
+        background: linear-gradient(to right, #8241c7 0%, #2575fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .welcome-subtext {
+        font-size: 1rem;
+        color: #6c757d;
+    }
+    .table-container {
+    margin-top: -10px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+#dataTable {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    background-color: #fff;
+}
+
+#dataTable thead th {
+    /* background-color: var(--brand-color); */
+    color: #000000;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 15px;
+    
+    border-color: black;
+}
+
+#dataTable tbody tr {
+    transition: all 0.3s ease;
+}
+
+#dataTable tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+#dataTable tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+#dataTable td {
+    padding: 12px 15px;
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#dataTable tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#dataTable a {
+    color: var(--brand-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+#dataTable a:hover {
+    color: linear-gradient(to right, #8241c7 0%, #2575fc 100%);
+}
+
+/* Status colors */
+#dataTable .status-finished {
+    color: #28a745;
+    font-weight: 600;
+}
+
+#dataTable .status-other {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* Responsive table */
+@media screen and (max-width: 767px) {
+    .table-container {
+        overflow-x: auto;
+    }
+}
+
+#openFilterModal i {
+font-size: 1rem;
+color: #24468c; /* This is the blue color you're using elsewhere */
+}
+
+#openFilterModal:hover i {
+    color: #1a3266; /* A slightly darker shade for hover effect */
+}
+
+#openFilterModal {
+    background-color: transparent;
+    border: none;
+}
+
+.text-end {
+    text-align: right;
+}
+
+.custom-slider {
+-webkit-appearance: none;
+width: 100%;
+height: 8px;
+border-radius: 5px;
+background: #d3d3d3;
+outline: none;
+opacity: 0.7;
+-webkit-transition: .2s;
+transition: opacity .2s;
+}
+
+.custom-slider:hover {
+    opacity: 1;
+}
+
+.custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #24468c;
+    cursor: pointer;
+    transition: background .3s ease-in-out;
+}
+
+.custom-slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #24468c;
+    cursor: pointer;
+    transition: background .3s ease-in-out;
+}
+
+.custom-slider::-webkit-slider-thumb:hover {
+    background: #1a3266;
+}
+
+.custom-slider::-moz-range-thumb:hover {
+    background: #1a3266;
+}
+
+.slider-labels {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+#filterCallDurationValue {
+    font-weight: bold;
+    color: #24468c;
+}
