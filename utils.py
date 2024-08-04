@@ -25,8 +25,6 @@ def load_from_dynamo():
     try:
         import boto3
         import os
-        AWS_ACCESS_KEY_ID = "AKIAYQGXBK2WSLVKNYEU"
-        AWS_SECRET_ACCESS_KEY = "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"
 
         db = boto3.resource('dynamodb', region_name='us-east-1',
                             aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
